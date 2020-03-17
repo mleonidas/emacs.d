@@ -19,22 +19,26 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "MesloLGS Nerd Font" :size 14)
+(setq doom-theme 'doom-solarized-dark)
+
+(setq doom-themes-enable-bold nil)
+
+(setq doom-font (font-spec :family "MesloLGS Nerd Font" :size 13)
       doom-big-font (font-spec :family "MesloLGS Nerd Font" :size 19)
       doom-unicode-font (font-spec :family "Meslo LG S DZ"))
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;;
-(setq doom-themes-enable-bold nil)
-(setq doom-theme 'doom-solarized-dark)
+
+(setq doom-line-numbers-style 'relative)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/repos/work/org/")
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 
 ; (after! rustic
@@ -58,6 +62,8 @@
 (after! cargo
   (setq cargo-process--custom-path-to-bin "/Users/mleone/.cargo/bin/cargo"))
 
+
+(load! "+bindings")
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
