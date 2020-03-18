@@ -63,8 +63,19 @@
   (cargo-minor-mode))
 
 
+(add-hook! ruby-mode
+  (flycheck-mode)
+  )
+
+
+(set-company-backend! '(ruby-mode))
+
 (after! cargo
   (setq cargo-process--custom-path-to-bin "/Users/mleone/.cargo/bin/cargo"))
+
+
+(setq gofmt-command "goimports")
+(add-hook 'before-save-hook #'gofmt-before-save)
 
 
 ;; display of certain characters and control codes to UTF-8
@@ -77,9 +88,11 @@
 
 (setq doom-modeline-buffer-file-name-style 'relative-to-project)
 
-(setq doom-modeline-height 8)
+
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (load! "+bindings")
+
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
