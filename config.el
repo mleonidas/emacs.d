@@ -23,8 +23,8 @@
 
 (setq doom-themes-enable-bold nil)
 
-(setq doom-font (font-spec :family "MesloLGS Nerd Font" :size 13)
-      doom-big-font (font-spec :family "MesloLGS Nerd Font" :size 19)
+(setq doom-font (font-spec :family "MesloLGSDZ Nerd Font" :size 12)
+      doom-big-font (font-spec :family "MesloLGSDZ Nerd Font" :size 19)
       doom-unicode-font (font-spec :family "Meslo LG S DZ"))
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -47,6 +47,10 @@
 ; (setq exec-path (append exec-path '("/Users/mleone/.cargo/bin")))
 
 
+(after! ivy
+  (setq ivy-re-builders-alist
+        '((t . ivy--regex-fuzzy))))
+
 
 
 (after! rustic 
@@ -62,6 +66,18 @@
 (after! cargo
   (setq cargo-process--custom-path-to-bin "/Users/mleone/.cargo/bin/cargo"))
 
+
+;; display of certain characters and control codes to UTF-8
+(defun my-term-use-utf8 ()
+  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
+
+
+(add-hook 'term-exec-hook 'my-term-use-utf8)
+
+
+(setq doom-modeline-buffer-file-name-style 'relative-to-project)
+
+(setq doom-modeline-height 8)
 
 (load! "+bindings")
 
