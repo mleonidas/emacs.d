@@ -23,9 +23,9 @@
 
 (setq doom-themes-enable-bold nil)
 
-(setq doom-font (font-spec :family "MesloLGSDZ Nerd Font" :size 12)
-      doom-big-font (font-spec :family "MesloLGSDZ Nerd Font" :size 19)
-      doom-unicode-font (font-spec :family "Meslo LG S DZ"))
+(setq doom-font (font-spec :family "MesloLGS NF" :size 13)
+      doom-big-font (font-spec :family "MesloLGS" :size 19)
+      doom-unicode-font (font-spec :family "MesloLGS"))
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
@@ -35,11 +35,13 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/Documents/repos/work/org/")
+(setq org-directory "~/Documents/Org/")
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 
+
+(setq-default show-trailing-whitespace t)
 
 ; (after! rustic
 ;   (setq rust-format-on-save t))
@@ -47,16 +49,26 @@
 ; (setq exec-path (append exec-path '("/Users/mleone/.cargo/bin")))
 
 
+(when (executable-find "ipython")
+  (setq python-shell-interpreter "ipython"))
+
+
+(setq python-shell-interpreter-args "--simple-prompt -i")
+
+(setq python-shell-unbuffered nil)
+(setq python-shell-prompt-detect-failure-warning nil)
+(setq python-shell-prompt-detect-enabled nil)
+
 (after! ivy
   (setq ivy-re-builders-alist
         '((t . ivy--regex-fuzzy))))
 
 
 
-(after! rustic 
+(after! rustic
         (setq rustic-format-on-save t))
 
-(add-hook! rustic 
+(add-hook! rustic
   (flycheck-rust-setup)
   (flycheck-mode)
   (racer-mode)
@@ -68,6 +80,8 @@
   )
 
 
+(setq dumb-jump-prefer-searcher 'rg)
+
 (set-company-backend! '(ruby-mode))
 
 (after! cargo
@@ -77,6 +91,15 @@
 (setq gofmt-command "goimports")
 (add-hook 'before-save-hook #'gofmt-before-save)
 
+
+(setq
+ projectile-project-search-path '("~/Documents/repos/work/")
+)
+
+(after! python
+  (set-company-backend! 'python-mode 'elpy-company-backend))
+
+(setq flycheck-python-pycompile-executable "python3")
 
 ;; display of certain characters and control codes to UTF-8
 (defun my-term-use-utf8 ()

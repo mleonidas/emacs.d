@@ -57,6 +57,7 @@
 (package! sqlup-mode)
 (package! emacsql)
 (package! emacsql-psql)
+(package! lsp-ruby)
 
 ;;; Python
 (package! yapfify)
