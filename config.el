@@ -53,6 +53,10 @@
   (setq python-shell-interpreter "ipython"))
 
 
+(setq projectile-rails-vanilla-command "bundle exec rails"
+      projectile-rails-spring-command "bin/spring"
+      projectile-rails-zeus-command "bin/zeus")
+
 (setq python-shell-interpreter-args "--simple-prompt -i")
 
 (setq python-shell-unbuffered nil)
@@ -84,6 +88,10 @@
 
 (set-company-backend! '(ruby-mode))
 
+;; these are the defaults (before I changed them)
+(setq company-idle-delay 0.2
+      company-minimum-prefix-length 3)
+
 (after! cargo
   (setq cargo-process--custom-path-to-bin "/Users/mleone/.cargo/bin/cargo"))
 
@@ -109,13 +117,21 @@
 (add-hook 'term-exec-hook 'my-term-use-utf8)
 
 
-(setq doom-modeline-buffer-file-name-style 'relative-to-project)
+(setq doom-modeline-buffer-file-name-style 'relative-to-project
+      doom-modeline-modal-icon nil)
+
+(setq doom-modeline-height 12)
 
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-(load! "+bindings")
 
+(after! ivy
+  (setq ivy-re-builders-alist
+        '((t . ivy--regex-fuzzy))))
+
+
+(load! "+bindings")
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:

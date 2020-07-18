@@ -10,7 +10,7 @@
  "C-l"    #'evil-window-right
  "A-q"    #'delete-window
  "C-`"      #'+popup/toggle
- "<C-tab>"  #'+popup/othe
+ "<C-tab>"  #'+popup/other
  (:map evil-window-map ; prefix "C-w"
    ;; Navigation
    "C-h"     #'evil-window-left
