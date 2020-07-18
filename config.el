@@ -130,6 +130,7 @@
   (setq ivy-re-builders-alist
         '((t . ivy--regex-fuzzy))))
 
+;; xfce ssh agent juggling
 
 (load! "+bindings")
 

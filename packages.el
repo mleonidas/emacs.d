@@ -62,6 +62,7 @@
 ;;; Python
 (package! yapfify)
 
+(package! keychain-environment)
 
 ;; Git
 (package! evil-magit)
