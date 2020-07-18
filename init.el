@@ -178,3 +178,5 @@
        :config
        ;;literate
        (default +bindings +smartparens))
+(when noninteractive
+  (add-to-list 'doom-env-whitelist "^SSH_"))
