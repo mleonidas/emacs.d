@@ -23,9 +23,9 @@
 
 (setq doom-themes-enable-bold nil)
 
-(setq doom-font (font-spec :family "MesloLGS NF" :size 13)
-      doom-big-font (font-spec :family "MesloLGS" :size 19)
-      doom-unicode-font (font-spec :family "MesloLGS"))
+(setq doom-font (font-spec :family "MesloLGSDZ Nerd Font" :size 14)
+      doom-big-font (font-spec :family "MesloLGSDZ Nerd Font" :size 24)
+      doom-unicode-font (font-spec :family "MesloLGSDZ Nerd Font"))
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
@@ -68,6 +68,16 @@
         '((t . ivy--regex-fuzzy))))
 
 
+;; load some snippets
+(defvar +mleone-dir (file-name-directory load-file-name))
+(defvar +mleone-snippets-dir (expand-file-name "snippets/" +mleone-dir))
+
+;; feature/snippets
+(after! yasnippet
+  ;; Don't use default snippets, use mine.
+  (setq yas-snippet-dirs
+        (append (list '+mleone-snippets-dir)
+                (delq 'yas-installed-snippets-dir yas-snippet-dirs))))
 
 (after! rustic
         (setq rustic-format-on-save t))

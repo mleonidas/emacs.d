@@ -1,0 +1,6 @@
+# key: py
+# name: Python source block
+# --
+#+BEGIN_SRC python :results output
+$0
+#+END_SRC5

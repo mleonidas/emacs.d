@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: decorate
+# uuid:
+# key: decorate
+# condition: t
+# --
+def wrap(inner):
+    @wraps(inner)
+    def wrapped(*args, **kwargs):
+        ret = inner(*args, **kwargs)
+        return ret
+
+    return wrapped
+
+return wrap
