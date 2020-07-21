@@ -91,6 +91,8 @@
 (setq dumb-jump-prefer-searcher 'rg)
 
 
+(after! robe
+  (set-company-backend! 'ruby-mode '(company-robe company-files company-dabbrev-code)))
 ;; these are the defaults (before I changed them)
 (after! company
   (setq company-idle-delay 0.2
