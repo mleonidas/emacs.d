@@ -19,12 +19,17 @@
        ;;japanese
 
        :completion
-       company           ; the ultimate code completion backend
+       (company           ; the ultimate code completion backend
+        +auto
+        +childframe)
        ;; syntax-checker    ; checks the syntax
        ;; spellcheck        ; learn to grammar yo
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       ivy               ; a search engine for love and life
+       (ivy               ; a search engine for love and life
+        +icons
+        +prescient
+        +childframe)
 
        :ui
        ;;deft              ; notational velocity for Emacs

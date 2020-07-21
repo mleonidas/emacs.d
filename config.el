@@ -41,13 +41,7 @@
 (setq display-line-numbers-type 'relative)
 
 
-(setq-default show-trailing-whitespace t)
-
-; (after! rustic
-;   (setq rust-format-on-save t))
-;
-; (setq exec-path (append exec-path '("/Users/mleone/.cargo/bin")))
-
+; (setq-default show-trailing-whitespace t)
 
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython"))
@@ -82,12 +76,12 @@
 (after! rustic
         (setq rustic-format-on-save t))
 
-(add-hook! rustic
-  (flycheck-rust-setup)
-  (flycheck-mode)
-  (racer-mode)
-  (cargo-minor-mode))
 
+(after! rust
+  ;; (require 'ein)
+  (setq rust-format-on-save t)
+  (add-hook! :after rust-mode-hook #'lsp)
+  (add-hook! :after rust-mode-hook #'rust-enable-format-on-save))
 
 (add-hook! ruby-mode
   (flycheck-mode)
@@ -96,26 +90,40 @@
 
 (setq dumb-jump-prefer-searcher 'rg)
 
-(set-company-backend! '(ruby-mode))
 
 ;; these are the defaults (before I changed them)
-(setq company-idle-delay 0.2
-      company-minimum-prefix-length 3)
+(after! company
+  (setq company-idle-delay 0.2
+        company-minimum-prefix-length 3))
+
+(use-package! pyimport
+  :after (python))
+
 
 (after! cargo
   (setq cargo-process--custom-path-to-bin "/Users/mleone/.cargo/bin/cargo"))
 
 
-(setq gofmt-command "goimports")
-(add-hook 'before-save-hook #'gofmt-before-save)
+;; (setq gofmt-command "goimports"
+;;       (add-hook 'before-save-hook #'gofmt-before-save))
 
+(use-package! company-lsp
+  :after (lsp-mode lsp-ui)
+  :config
+  (add-to-list #'company-backends #'company-lsp)
+  (add-to-list #'company-backends #'company-files)
+  (setq company-lsp-async t))
 
-(setq
- projectile-project-search-path '("~/Documents/repos/work/")
-)
+(setq projectile-project-search-path '("~/Documents/repos/work/"))
 
-(after! python
-  (set-company-backend! 'python-mode 'elpy-company-backend))
+(add-hook! rust-mode
+  (flycheck-rust-setup)
+  (flycheck-mode)
+  (cargo-minor-mode)
+  (lsp)
+  (rust-enable-format-on-save)
+  (map! :map rust-mode-map
+        "C-c C-f" #'rust-format-buffer))
 
 (setq flycheck-python-pycompile-executable "python3")
 

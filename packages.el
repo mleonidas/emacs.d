@@ -58,9 +58,10 @@
 (package! emacsql)
 (package! emacsql-psql)
 (package! lsp-ruby)
+(package! company-lsp)
 
 ;;; Python
-(package! yapfify)
+(package! pyimport)
 
 (package! keychain-environment)
 
@@ -68,3 +69,4 @@
 (package! evil-magit)
 (package! marshal)
 (package! forge)
+
