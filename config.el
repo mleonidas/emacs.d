@@ -40,26 +40,46 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/Org/")
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 
+;; (setq-default show-trailing-whitespace t)
 
-; (setq-default show-trailing-whitespace t)
+;; Python
+(use-package! pyimport
+  :after (python))
 
+(setq org-babel-python-command "python3")
+
+(defun tec-org-python ()
+  (if (eq major-mode 'python-mode)
+   (progn (anaconda-mode t)
+          (company-mode t))))
+
+(add-hook 'org-src-mode-hook 'tec-org-python)
+
+;; ipython
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython"))
 
+(setq python-shell-interpreter-args "--simple-prompt -i")
+(setq python-shell-unbuffered nil)
+(setq python-shell-prompt-detect-failure-warning nil)
+(setq python-shell-prompt-detect-enabled nil)
 
+;; Ruby
 (setq projectile-rails-vanilla-command "bundle exec rails"
       projectile-rails-spring-command "bin/spring"
       projectile-rails-zeus-command "bin/zeus")
 
-(setq python-shell-interpreter-args "--simple-prompt -i")
+(add-hook! ruby-mode
+  (flycheck-mode)
+  )
 
-(setq python-shell-unbuffered nil)
-(setq python-shell-prompt-detect-failure-warning nil)
-(setq python-shell-prompt-detect-enabled nil)
+(after! robe
+  (set-company-backend! 'ruby-mode '(company-robe company-files company-dabbrev-code)))
 
 ;; load some snippets
 (defvar +mleone-dir (file-name-directory load-file-name))
@@ -72,44 +92,34 @@
         (append (list '+mleone-snippets-dir)
                 (delq 'yas-installed-snippets-dir yas-snippet-dirs))))
 
-
+;; Rust
 (after! rustic
         (setq rustic-format-on-save t))
 
-(use-package! docker-compose-mode
-  :after (docker))
-
+(after! cargo
+  (setq cargo-process--custom-path-to-bin "/Users/mike/.cargo/bin/cargo"))
 
 (after! rust
-  ;; (require 'ein)
   (setq rust-format-on-save t)
   (add-hook! :after rust-mode-hook #'lsp)
   (add-hook! :after rust-mode-hook #'rust-enable-format-on-save))
 
-(add-hook! ruby-mode
-  (flycheck-mode)
-  )
+;; Docker?
+(use-package! docker-compose-mode
+  :after (docker))
 
-
+;; Dumb jump
 (setq dumb-jump-prefer-searcher 'rg)
 
+;; Golang
 (setq gofmt-command "goimports")
 (add-hook 'before-save-hook #'gofmt-before-save)
 
-(after! robe
-  (set-company-backend! 'ruby-mode '(company-robe company-files company-dabbrev-code)))
+
 ;; these are the defaults (before I changed them)
-;;
 (after! company
   (setq company-idle-delay 0.2
         company-minimum-prefix-length 3))
-
-(use-package! pyimport
-  :after (python))
-
-
-(after! cargo
-  (setq cargo-process--custom-path-to-bin "/Users/mleone/.cargo/bin/cargo"))
 
 
 ;; (setq gofmt-command "goimports"
