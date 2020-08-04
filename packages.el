@@ -59,6 +59,7 @@
 (package! emacsql-psql)
 (package! lsp-ruby)
 (package! company-lsp)
+(package! docker-compose-mode)
 
 ;;; Python
 (package! pyimport)
@@ -70,3 +71,10 @@
 (package! marshal)
 (package! forge)
 
+
+
+;; Javascript
+(package! flow-minor-mode)
+(package! flycheck-flow)
+(package! company-flow)
+(package! prettier-js)

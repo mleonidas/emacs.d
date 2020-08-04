@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: pdb
+# uuid:
+# key: pdb
+# condition: t
+# --
+import pdb; pdb.set_trace()

@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: dunder
+# uuid:
+# key: du
+# condition: t
+# --
+__$1__$0

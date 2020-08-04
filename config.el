@@ -20,12 +20,13 @@
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 (setq doom-theme 'doom-solarized-dark)
+;;(setq doom-theme 'doom-one)
 
 (setq doom-themes-enable-bold nil)
 
-(setq doom-font (font-spec :family "MesloLGSDZ Nerd Font" :size 14)
-      doom-big-font (font-spec :family "MesloLGSDZ Nerd Font" :size 24)
-      doom-unicode-font (font-spec :family "MesloLGSDZ Nerd Font"))
+(setq doom-font (font-spec :family "MesloLGMDZ Nerd Font" :size 19)
+      doom-big-font (font-spec :family "MesloLGMDZ Nerd Font" :size 24)
+      doom-unicode-font (font-spec :family "MesloLGMDZ Nerd Font"))
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
@@ -57,11 +58,6 @@
 (setq python-shell-prompt-detect-failure-warning nil)
 (setq python-shell-prompt-detect-enabled nil)
 
-(after! ivy
-  (setq ivy-re-builders-alist
-        '((t . ivy--regex-fuzzy))))
-
-
 ;; load some snippets
 (defvar +mleone-dir (file-name-directory load-file-name))
 (defvar +mleone-snippets-dir (expand-file-name "snippets/" +mleone-dir))
@@ -73,8 +69,12 @@
         (append (list '+mleone-snippets-dir)
                 (delq 'yas-installed-snippets-dir yas-snippet-dirs))))
 
+
 (after! rustic
         (setq rustic-format-on-save t))
+
+(use-package! docker-compose-mode
+  :after (docker))
 
 
 (after! rust
@@ -90,10 +90,13 @@
 
 (setq dumb-jump-prefer-searcher 'rg)
 
+(setq gofmt-command "goimports")
+(add-hook 'before-save-hook #'gofmt-before-save)
 
 (after! robe
   (set-company-backend! 'ruby-mode '(company-robe company-files company-dabbrev-code)))
 ;; these are the defaults (before I changed them)
+;;
 (after! company
   (setq company-idle-delay 0.2
         company-minimum-prefix-length 3))
@@ -145,7 +148,6 @@
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-
 (after! ivy
   (setq ivy-re-builders-alist
         '((t . ivy--regex-fuzzy))))
@@ -153,7 +155,6 @@
 ;; xfce ssh agent juggling
 
 (load! "+bindings")
-
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
@@ -171,3 +172,15 @@
 ;;
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (docker-compose-mode))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
