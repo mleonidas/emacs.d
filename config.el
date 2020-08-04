@@ -26,11 +26,14 @@
 
 (setq doom-font (font-spec :family "MesloLGMDZ Nerd Font" :size 19)
       doom-big-font (font-spec :family "MesloLGMDZ Nerd Font" :size 24)
+      doom-big-font-increment 5
+      doom-variable-pitch-font (font-spec :family "sans")
       doom-unicode-font (font-spec :family "MesloLGMDZ Nerd Font"))
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;;
+
 
 (setq doom-line-numbers-style 'relative)
 
@@ -138,6 +141,16 @@
 
 
 (add-hook 'term-exec-hook 'my-term-use-utf8)
+
+
+(defun turn-on-comint-history (history-file)
+          (setq comint-input-ring-file-name history-file)
+          (comint-read-input-ring 'silent))
+
+
+(add-hook 'inf-ruby-mode-hook
+          (lambda ()
+            (turn-on-comint-history "~/.pry_history")))
 
 
 (setq doom-modeline-buffer-file-name-style 'relative-to-project
