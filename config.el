@@ -123,23 +123,8 @@
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython"))
 
-;; (use-package! pyimport
-;;   :after (python)
-;;   :init
-;;   (add-hook 'before-save-hook 'pyimport-insert-missing))
-
 (after! python
-  (defun +python-setup ()
-    (setq-local fill-column 100
-                whitespace-line-column 100
-                flycheck-disabled-checkers '(python-flake8)
-                flycheck-checker 'python-pylint))
-  (add-hook #'python-mode-hook #'+python-setup)
-  (add-hook #'python-mode-hook #'lsp)
-  (add-hook #'python-mode-hook #'py-isort-before-save)
-  (add-hook #'before-save-hook #'pyimport-insert-missing)
-  (remove-hook #'python-mode-hook #'pipenv-mode))
-
+  (remove-hook! 'python-mode-hook #'pipenv-mode))
 
 (setq python-shell-interpreter-args "--simple-prompt -i")
 (setq py-python-command-args '("--colors=linux"))
