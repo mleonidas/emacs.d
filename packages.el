@@ -62,7 +62,7 @@
 (package! docker-compose-mode)
 
 ;;; Python
-(package! pyimport)
+;;(package! pyimport)
 
 (package! keychain-environment)
 
@@ -74,7 +74,8 @@
 
 
 ;; Javascript
-(package! flow-minor-mode)
-(package! flycheck-flow)
-(package! company-flow)
-(package! prettier-js)
+;; (package! flow-minor-mode)
+;; (package! flycheck-flow)
+;; (package! company-flow)
+;; (package! prettier-js)
+;; (package! vue-mode)

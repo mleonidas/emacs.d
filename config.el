@@ -20,15 +20,14 @@
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 (setq doom-theme 'doom-solarized-dark)
-;;(setq doom-theme 'doom-one)
-
 (setq doom-themes-enable-bold nil)
 
 (setq doom-font (font-spec :family "MesloLGMDZ Nerd Font" :size 19)
       doom-big-font (font-spec :family "MesloLGMDZ Nerd Font" :size 24)
       doom-big-font-increment 5
-      doom-variable-pitch-font (font-spec :family "sans")
+      doom-variable-pitch-font (font-spec :family "DejaVu Sans Mono Nerd Font")
       doom-unicode-font (font-spec :family "MesloLGMDZ Nerd Font"))
+
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
@@ -36,6 +35,79 @@
 
 
 (setq doom-line-numbers-style 'relative)
+(setq display-line-numbers-type 'relative)
+
+;; Company
+(after! company
+  (add-to-list 'company-backends 'company-files)
+  (setq company-selection-wrap-around t)
+  (setq company-minimum-prefix-length 3)
+  (setq company-idle-delay 0.2))
+
+(use-package! lsp-mode
+  :init
+  (setq +lsp-company-backends '(company-files company-capf)))
+
+;; Doom modeline config
+(after! doom-modeline
+  :config
+  (setq doom-modeline-height 12)
+  (setq doom-modeline-buffer-file-name-style 'relative-to-project)
+  (setq doom-modeline-major-mode-icon t)
+  (setq doom-modeline-buffer-encoding t)
+  (setq doom-modeline-modal-icon nil))
+
+;; ivy
+(after! ivy
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+
+  ;; enable this if you want `swiper' to use it
+  (setq search-default-mode #'char-fold-to-regexp)
+  (setq ivy-re-builders-alist
+        '((swiper . ivy--regex-plus)
+           (counsel-rg . ivy--regex-plus)
+          (t      . ivy--regex-fuzzy)))
+
+  (recentf-mode 1)
+  (defun eh-ivy-return-recentf-index (dir)
+    (when (and (boundp 'recentf-list)
+            recentf-list)
+      (let ((files-list
+              (cl-subseq recentf-list
+                0 (min (- (length recentf-list) 1) 20)))
+             (index 0))
+        (while files-list
+          (if (string-match-p dir (car files-list))
+            (setq files-list nil)
+            (setq index (+ index 1))
+            (setq files-list (cdr files-list))))
+        index)))
+
+  (defun eh-ivy-sort-file-function (x y)
+    (let* ((x (concat ivy--directory x))
+            (y (concat ivy--directory y))
+            (x-mtime (nth 5 (file-attributes x)))
+            (y-mtime (nth 5 (file-attributes y))))
+      (if (file-directory-p x)
+        (if (file-directory-p y)
+          (let ((x-recentf-index (eh-ivy-return-recentf-index x))
+                 (y-recentf-index (eh-ivy-return-recentf-index y)))
+            (if (and x-recentf-index y-recentf-index)
+              ;; Directories is sorted by `recentf-list' index
+              (< x-recentf-index y-recentf-index)
+              (string< x y)))
+          t)
+        (if (file-directory-p y)
+          nil
+          ;; Files is sorted by mtime
+          (time-less-p y-mtime x-mtime)))))
+
+  (add-to-list 'ivy-sort-functions-alist
+    '(read-file-name-internal . eh-ivy-sort-file-function)))
+
+
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -43,28 +115,34 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
 
-;; (setq-default show-trailing-whitespace t)
 
 ;; Python
-(use-package! pyimport
-  :after (python))
-
-(setq org-babel-python-command "python3")
-
-(defun tec-org-python ()
-  (if (eq major-mode 'python-mode)
-   (progn (anaconda-mode t)
-          (company-mode t))))
-
-(add-hook 'org-src-mode-hook 'tec-org-python)
-
+;;
 ;; ipython
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython"))
 
+;; (use-package! pyimport
+;;   :after (python)
+;;   :init
+;;   (add-hook 'before-save-hook 'pyimport-insert-missing))
+
+(after! python
+  (defun +python-setup ()
+    (setq-local fill-column 100
+                whitespace-line-column 100
+                flycheck-disabled-checkers '(python-flake8)
+                flycheck-checker 'python-pylint))
+  (add-hook #'python-mode-hook #'+python-setup)
+  (add-hook #'python-mode-hook #'lsp)
+  (add-hook #'python-mode-hook #'py-isort-before-save)
+  (add-hook #'before-save-hook #'pyimport-insert-missing)
+  (remove-hook #'python-mode-hook #'pipenv-mode))
+
+
 (setq python-shell-interpreter-args "--simple-prompt -i")
+(setq py-python-command-args '("--colors=linux"))
 (setq python-shell-unbuffered nil)
 (setq python-shell-prompt-detect-failure-warning nil)
 (setq python-shell-prompt-detect-enabled nil)
@@ -74,23 +152,15 @@
       projectile-rails-spring-command "bin/spring"
       projectile-rails-zeus-command "bin/zeus")
 
+
 (add-hook! ruby-mode
-  (flycheck-mode)
-  )
+  (flycheck-mode))
 
 (after! robe
   (set-company-backend! 'ruby-mode '(company-robe company-files company-dabbrev-code)))
 
-;; load some snippets
 (defvar +mleone-dir (file-name-directory load-file-name))
 (defvar +mleone-snippets-dir (expand-file-name "snippets/" +mleone-dir))
-
-;; feature/snippets
-(after! yasnippet
-  ;; Don't use default snippets, use mine.
-  (setq yas-snippet-dirs
-        (append (list '+mleone-snippets-dir)
-                (delq 'yas-installed-snippets-dir yas-snippet-dirs))))
 
 ;; Rust
 (after! rustic
@@ -104,76 +174,45 @@
   (add-hook! :after rust-mode-hook #'lsp)
   (add-hook! :after rust-mode-hook #'rust-enable-format-on-save))
 
+  (add-hook! rust-mode
+    (flycheck-rust-setup)
+    (flycheck-mode)
+    (cargo-minor-mode)
+    (lsp)
+    (rust-enable-format-on-save)
+    (map! :map rust-mode-map
+          "C-c C-f" #'rust-format-buffer))
+
+
+(after! terraform
+  (setq terraform-format-on-save-mode 1))
+
 ;; Docker?
 (use-package! docker-compose-mode
   :after (docker))
 
+(after! terraform
+  (add-hook! :after terraform-mode-hook #'terraform-format-buffer))
 ;; Dumb jump
 (setq dumb-jump-prefer-searcher 'rg)
 
-;; Golang
-(setq gofmt-command "goimports")
-(add-hook 'before-save-hook #'gofmt-before-save)
-
-
-;; these are the defaults (before I changed them)
-(after! company
-  (setq company-idle-delay 0.2
-        company-minimum-prefix-length 3))
-
-
-;; (setq gofmt-command "goimports"
-;;       (add-hook 'before-save-hook #'gofmt-before-save))
-
-(use-package! company-lsp
-  :after (lsp-mode lsp-ui)
-  :config
-  (add-to-list #'company-backends #'company-lsp)
-  (add-to-list #'company-backends #'company-files)
-  (setq company-lsp-async t))
-
 (setq projectile-project-search-path '("~/Documents/repos/work/"))
-
-(add-hook! rust-mode
-  (flycheck-rust-setup)
-  (flycheck-mode)
-  (cargo-minor-mode)
-  (lsp)
-  (rust-enable-format-on-save)
-  (map! :map rust-mode-map
-        "C-c C-f" #'rust-format-buffer))
-
-(setq flycheck-python-pycompile-executable "python3")
 
 ;; display of certain characters and control codes to UTF-8
 (defun my-term-use-utf8 ()
   (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
 
-
 (add-hook 'term-exec-hook 'my-term-use-utf8)
-
 
 (defun turn-on-comint-history (history-file)
           (setq comint-input-ring-file-name history-file)
           (comint-read-input-ring 'silent))
 
-
 (add-hook 'inf-ruby-mode-hook
           (lambda ()
             (turn-on-comint-history "~/.pry_history")))
 
-
-(setq doom-modeline-buffer-file-name-style 'relative-to-project
-      doom-modeline-modal-icon nil)
-
-(setq doom-modeline-height 12)
-
-
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
-(after! ivy
-  (setq ivy-re-builders-alist
-        '((t . ivy--regex-fuzzy))))
 
 ;; xfce ssh agent juggling
 
