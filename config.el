@@ -211,11 +211,12 @@
           (lambda ()
             (turn-on-comint-history "~/.pry_history")))
 
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(add-hook 'yaml-mode-hook
+          (lambda ()
+            (set (make-local-variable 'font-lock-variable-name-face)
+                 'font-lock-function-name-face)))
 
-(use-package! yaml-mode
-  :config
-  (setq font-lock-variable-name-face 'font-lock-function-name-face))
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (load! "+bindings")
 
