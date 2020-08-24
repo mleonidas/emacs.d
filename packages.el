@@ -57,21 +57,6 @@
 (package! sqlup-mode)
 (package! emacsql)
 (package! emacsql-psql)
-(package! lsp-ruby)
-(package! company-lsp)
-(package! docker-compose-mode)
-
-;;; Python
-;;(package! pyimport)
-
-(package! keychain-environment)
-
-;; Git
-(package! evil-magit)
-(package! marshal)
-(package! forge)
-
-
 
 ;; Javascript
 ;; (package! flow-minor-mode)

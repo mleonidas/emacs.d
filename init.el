@@ -22,15 +22,13 @@
        (company           ; the ultimate code completion backend
         +auto
         +childframe)
-       ;; syntax-checker    ; checks the syntax
-       ;; spellcheck        ; learn to grammar yo
+       ; syntax-checker    ; checks the syntax
+       ; spellcheck        ; learn to grammar yo
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy               ; a search engine for love and life
         +icons
         +prescient)
-;;        +childframe)
-
        :ui
        ;;deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
@@ -72,7 +70,7 @@
        :emacs
        dired             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
-       ;;ibuffer         ; interactive buffer management
+       ibuffer         ; interactive buffer management
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
@@ -159,9 +157,9 @@
        ;;racket            ; a DSL for DSLs
        ;;rest              ; Emacs as a REST client
        ;;rst               ; ReST in peace
-       (ruby +rails +rvm)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+       (ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       scala             ; java, but good
+       (scala +lsp)             ; java, but good
        ;;scheme            ; a fully conniving family of lisps
        (sh +zsh)                ; she sells {ba,z,fi}sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.

@@ -22,6 +22,8 @@
 (setq doom-theme 'doom-solarized-dark)
 (setq doom-themes-enable-bold nil)
 
+(setq doom-themes-enable-bold nil)
+
 (setq doom-font (font-spec :family "MesloLGMDZ Nerd Font" :size 19)
       doom-big-font (font-spec :family "MesloLGMDZ Nerd Font" :size 24)
       doom-big-font-increment 5
@@ -168,16 +170,28 @@
     (map! :map rust-mode-map
           "C-c C-f" #'rust-format-buffer))
 
-
+;; Terraform
 (after! terraform
   (setq terraform-format-on-save-mode 1))
 
-;; Docker?
-(use-package! docker-compose-mode
-  :after (docker))
+
+(use-package! ansible
+  :commands ansible-auto-decrypt-encrypt
+  :init
+  (put 'ansible-vault-password-file 'safe-local-variable #'stringp)
+  :config
+  (setq ansible-section-face 'ansible-section-face
+        ansible-task-label-face 'font-lock-doc-face)
+  (map! :map ansible-key-map
+        :localleader
+        :desc "Decrypt buffer"          "d" #'ansible-decrypt-buffer
+        :desc "Encrypt buffer"          "e" #'ansible-encrypt-buffer
+        :desc "Look up in Ansible docs" "h" #'ansible-doc))
+
 
 (after! terraform
   (add-hook! :after terraform-mode-hook #'terraform-format-buffer))
+
 ;; Dumb jump
 (setq dumb-jump-prefer-searcher 'rg)
 
@@ -185,7 +199,7 @@
 
 ;; display of certain characters and control codes to UTF-8
 (defun my-term-use-utf8 ()
-  (set-buffer-process-coding-system 'utf-8-unix 'utf-8-unix))
+  (set-process-coding-system 'utf-8-unix 'utf-8-unix))
 
 (add-hook 'term-exec-hook 'my-term-use-utf8)
 
@@ -199,7 +213,9 @@
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-;; xfce ssh agent juggling
+(use-package! yaml-mode
+  :config
+  (setq font-lock-variable-name-face 'font-lock-function-name-face))
 
 (load! "+bindings")
 
