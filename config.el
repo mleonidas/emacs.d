@@ -7,7 +7,7 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Michael Leone"
-      user-mail-address "mike.leone@credsimple.com")
+      user-mail-address "mleone@attentivemobile.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -22,12 +22,12 @@
 (setq doom-theme 'doom-solarized-dark)
 (setq doom-themes-enable-bold nil)
 
-(setq doom-themes-enable-bold nil)
+(setq-hook! '+doom-dashboard-mode-hook default-directory "~")
 
-(setq doom-font (font-spec :family "MesloLGMDZ Nerd Font" :size 19)
-      doom-big-font (font-spec :family "MesloLGMDZ Nerd Font" :size 24)
+(setq doom-font (font-spec :family "MesloLGMDZ Nerd Font" :size 12)
+      doom-big-font (font-spec :family "MesloLGMDZ Nerd Font" :size 14)
       doom-big-font-increment 5
-      doom-variable-pitch-font (font-spec :family "DejaVu Sans Mono Nerd Font")
+      doom-variable-pitch-font (font-spec :family "MesloLGMDZ Nerd Font")
       doom-unicode-font (font-spec :family "MesloLGMDZ Nerd Font"))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -35,9 +35,15 @@
 ;; `load-theme' function. This is the default:
 ;;
 
+(when (string= system-type "darwin")
+  (setq dired-use-ls-dired t
+        insert-directory-program "/usr/local/bin/gls"
+        dired-listing-switches "-aBhl --group-directories-first"))
+
 
 (setq doom-line-numbers-style 'relative)
 (setq display-line-numbers-type 'relative)
+(setq confirm-kill-emacs nil)
 
 ;; Company
 (after! company
@@ -46,70 +52,21 @@
   (setq company-minimum-prefix-length 3)
   (setq company-idle-delay 0.2))
 
+
 (use-package! lsp-mode
   :init
   (setq +lsp-company-backends '(company-files company-capf)))
 
 ;; Doom modeline config
-(after! doom-modeline
-  :config
-  (setq doom-modeline-height 12)
-  (setq doom-modeline-buffer-file-name-style 'relative-to-project)
-  (setq doom-modeline-major-mode-icon t)
-  (setq doom-modeline-buffer-encoding t)
-  (setq doom-modeline-modal-icon nil))
-
-;; ivy
-(after! ivy
-  :config
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-
-  ;; enable this if you want `swiper' to use it
-  (setq search-default-mode #'char-fold-to-regexp)
-  (setq ivy-re-builders-alist
-        '((swiper . ivy--regex-plus)
-           (counsel-rg . ivy--regex-plus)
-          (t      . ivy--regex-fuzzy)))
-
-  (recentf-mode 1)
-  (defun eh-ivy-return-recentf-index (dir)
-    (when (and (boundp 'recentf-list)
-            recentf-list)
-      (let ((files-list
-              (cl-subseq recentf-list
-                0 (min (- (length recentf-list) 1) 20)))
-             (index 0))
-        (while files-list
-          (if (string-match-p dir (car files-list))
-            (setq files-list nil)
-            (setq index (+ index 1))
-            (setq files-list (cdr files-list))))
-        index)))
-
-  (defun eh-ivy-sort-file-function (x y)
-    (let* ((x (concat ivy--directory x))
-            (y (concat ivy--directory y))
-            (x-mtime (nth 5 (file-attributes x)))
-            (y-mtime (nth 5 (file-attributes y))))
-      (if (file-directory-p x)
-        (if (file-directory-p y)
-          (let ((x-recentf-index (eh-ivy-return-recentf-index x))
-                 (y-recentf-index (eh-ivy-return-recentf-index y)))
-            (if (and x-recentf-index y-recentf-index)
-              ;; Directories is sorted by `recentf-list' index
-              (< x-recentf-index y-recentf-index)
-              (string< x y)))
-          t)
-        (if (file-directory-p y)
-          nil
-          ;; Files is sorted by mtime
-          (time-less-p y-mtime x-mtime)))))
-
-  (add-to-list 'ivy-sort-functions-alist
-    '(read-file-name-internal . eh-ivy-sort-file-function)))
-
-
+;; (after! doom-modeline
+;;   :config
+;;   (set-face-attribute 'mode-line nil :height 100)
+;;   (set-face-attribute 'mode-line-inactive nil :height 100)
+;;   (setq doom-modeline-height 6)
+;;   (setq doom-modeline-buffer-file-name-style 'relative-to-project)
+;;   (setq doom-modeline-major-mode-icon t)
+;;   (setq doom-modeline-buffer-encoding t)
+;;   (setq doom-modeline-modal-icon nil))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -118,15 +75,13 @@
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 
-
-;; Python
-;;
 ;; ipython
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython"))
 
-(after! python
-  (remove-hook! 'python-mode-hook #'pipenv-mode))
+(after! python-pytest
+  (setq python-pytest-arguments '("--color" "--failed-first" "import-mode=append"))
+  (evil-set-initial-state 'python-pytest-mode 'normal))
 
 (setq python-shell-interpreter-args "--simple-prompt -i")
 (setq py-python-command-args '("--colors=linux"))
@@ -139,6 +94,9 @@
       projectile-rails-spring-command "bin/spring"
       projectile-rails-zeus-command "bin/zeus")
 
+(setq gofmt-command "goimports")
+(add-hook 'before-save-hook #'lsp-format-buffer)
+(add-hook 'before-save-hook #'lsp-organize-imports)
 
 (add-hook! ruby-mode
   (flycheck-mode))
@@ -154,7 +112,7 @@
         (setq rustic-format-on-save t))
 
 (after! cargo
-  (setq cargo-process--custom-path-to-bin "/Users/mike/.cargo/bin/cargo"))
+  (setq cargo-process--custom-path-to-bin "/Users/mleone/.cargo/bin/cargo"))
 
 (after! rust
   (setq rust-format-on-save t)
@@ -216,7 +174,12 @@
             (set (make-local-variable 'font-lock-variable-name-face)
                  'font-lock-function-name-face)))
 
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+;; (add-hook 'terraform-mode-hook
+;;           (lambda ()
+;;             (set (make-local-variable 'font-lock-variable-name-face)
+;;                  'error)))
+
+; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (load! "+bindings")
 
