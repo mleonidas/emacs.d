@@ -57,6 +57,12 @@
   :init
   (setq +lsp-company-backends '(company-files company-capf)))
 
+
+(setq doom-modeline-buffer-file-name-style 'relative-to-project
+      doom-modeline-modal-icon nil
+      doom-modeline-github t)
+
+
 ;; Doom modeline config
 ;; (after! doom-modeline
 ;;   :config
@@ -93,6 +99,13 @@
 (setq projectile-rails-vanilla-command "bundle exec rails"
       projectile-rails-spring-command "bin/spring"
       projectile-rails-zeus-command "bin/zeus")
+
+;; js/typescript
+(defun typescript-mode-setup ()
+  "Custom setup for Typescript mode"
+  (setq flycheck-checker 'javascript-eslint)
+  )
+(add-hook 'typescript-mode-hook 'typescript-mode-setup)
 
 ;; Golang
 
