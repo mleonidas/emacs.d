@@ -62,38 +62,25 @@
       doom-modeline-modal-icon nil
       doom-modeline-github t)
 
+(set-face-attribute 'mode-line nil :height 100)
+(set-face-attribute 'mode-line-inactive nil :height 100)
 
-;; Doom modeline config
-;; (after! doom-modeline
-;;   :config
-;;   (set-face-attribute 'mode-line nil :height 100)
-;;   (set-face-attribute 'mode-line-inactive nil :height 100)
-;;   (setq doom-modeline-height 6)
-;;   (setq doom-modeline-buffer-file-name-style 'relative-to-project)
-;;   (setq doom-modeline-major-mode-icon t)
-;;   (setq doom-modeline-buffer-encoding t)
-;;   (setq doom-modeline-modal-icon nil))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/Org/")
 
+(defun org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are done, to TODO otherwise."
+  (let (org-log-done org-log-states)   ; turn off logging
+    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+
+(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 
-;; ipython
-(when (executable-find "ipython")
-  (setq python-shell-interpreter "ipython"))
 
-(after! python-pytest
-  (setq python-pytest-arguments '("--color" "--failed-first" "import-mode=append"))
-  (evil-set-initial-state 'python-pytest-mode 'normal))
-
-(setq python-shell-interpreter-args "--simple-prompt -i")
-(setq py-python-command-args '("--colors=linux"))
-(setq python-shell-unbuffered nil)
-(setq python-shell-prompt-detect-failure-warning nil)
-(setq python-shell-prompt-detect-enabled nil)
 
 ;; Ruby
 (setq projectile-rails-vanilla-command "bundle exec rails"
@@ -101,24 +88,13 @@
       projectile-rails-zeus-command "bin/zeus")
 
 ;; js/typescript
-(defun typescript-mode-setup ()
-  "Custom setup for Typescript mode"
-  (setq flycheck-checker 'javascript-eslint)
-  )
-(add-hook 'typescript-mode-hook 'typescript-mode-setup)
-
-;; Golang
-
-(after! go-mode
-  (set-lookup-handlers! 'go-mode
-    :definition #'godef-jump
-    :references #'go-guru-referrers
-    :documentation #'godoc-at-point))
-
-(setq gofmt-command "goimports")
-(add-hook 'before-save-hook #'lsp-format-buffer)
-(add-hook 'before-save-hook #'lsp-organize-imports)
-
+;;
+;; (defun typescript-mode-setup ()
+;;   "Custom setup for Typescript mode"
+;;   (setq flycheck-checker 'javascript-eslint 'js-mode)
+;;   (setq flycheck-checker 'typescript-tslint 'rjsx-mode)
+;;   )
+;; (add-hook 'typescript-mode-hook 'typescript-mode-setup)
 (add-hook! ruby-mode
   (flycheck-mode))
 
@@ -126,28 +102,13 @@
   (set-company-backend! 'ruby-mode '(company-robe company-files company-dabbrev-code)))
 
 (defvar +mleone-dir (file-name-directory load-file-name))
-(defvar +mleone-snippets-dir (expand-file-name "snippets/" +mleone-dir))
+;; (defvar +mleone-snippets-dir (expand-file-name "snippets/" +mleone-dir))
 
 ;; Rust
 (after! rustic
         (setq rustic-format-on-save t))
 
-(after! cargo
-  (setq cargo-process--custom-path-to-bin "/Users/mleone/.cargo/bin/cargo"))
-
-(after! rust
-  (setq rust-format-on-save t)
-  (add-hook! :after rust-mode-hook #'lsp)
-  (add-hook! :after rust-mode-hook #'rust-enable-format-on-save))
-
-  (add-hook! rust-mode
-    (flycheck-rust-setup)
-    (flycheck-mode)
-    (cargo-minor-mode)
-    (lsp)
-    (rust-enable-format-on-save)
-    (map! :map rust-mode-map
-          "C-c C-f" #'rust-format-buffer))
+(setq! lsp-auto-guess-root nil)
 
 ;; Terraform
 (after! terraform
@@ -174,13 +135,9 @@
 ;; Dumb jump
 (setq dumb-jump-prefer-searcher 'rg)
 
-(setq projectile-project-search-path '("~/Documents/repos/work/"))
-
 ;; display of certain characters and control codes to UTF-8
 (defun my-term-use-utf8 ()
   (set-process-coding-system 'utf-8-unix 'utf-8-unix))
-
-(add-hook 'term-exec-hook 'my-term-use-utf8)
 
 (defun turn-on-comint-history (history-file)
           (setq comint-input-ring-file-name history-file)
@@ -195,14 +152,12 @@
             (set (make-local-variable 'font-lock-variable-name-face)
                  'font-lock-function-name-face)))
 
-;; (add-hook 'terraform-mode-hook
-;;           (lambda ()
-;;             (set (make-local-variable 'font-lock-variable-name-face)
-;;                  'error)))
-
-; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (load! "+bindings")
+(load! "+java")
+(load! "+go")
+(load! "+rust")
+(load! "+python")
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
