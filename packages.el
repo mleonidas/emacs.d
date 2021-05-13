@@ -59,6 +59,14 @@
 (package! emacsql-psql)
 
 
+
+;; Python
+(package! python-black)
+
+;;; Kubernetes
+;; (package! kubernetes)
+;; (package! kubernetes-evil)
+
 ;; Javascript
 ;; (package! flow-minor-mode)
 ;; (package! flycheck-flow)

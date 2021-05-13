@@ -36,13 +36,16 @@
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
        ;;fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       (emoji +unicode)
        ;;hydra
        ;;indent-guides     ; highlighted indent columns
        modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink the current line after jumping
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
-       (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       (popup
+        +all
+        +defaults)   ; tame sudden yet inevitable temporary windows
        ;;pretty-code     ; replace bits of code with pretty symbols
        ;;tabs              ; an tab bar for Emacs
        ;;treemacs          ; a project drawer, like neotree but cooler
@@ -74,7 +77,7 @@
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
-       ;;eshell            ; a consistent, cross-platform shell (WIP)
+       ;; eshell            ; a consistent, cross-platform shell (WIP)
        ;; shell             ; a terminal REPL for Emacs
        ;; term              ; terminals in Emacs
        vterm             ; another terminals in Emacs
@@ -95,7 +98,6 @@
        ;;gist              ; interacting with github gists
        (lookup +docsets)              ; navigate your code and its documentation
        lsp
-       ;;macos             ; MacOS-specific commands
        magit             ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
@@ -105,6 +107,9 @@
        (terraform +lsp)         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
        ;;upload            ; map local to remote projects via ssh/ftp
+
+       :os
+       ; (:if IS-MAC macos) ; MacOS-specific commands
 
        :lang
        ;; agda              ; types of types of types of types...

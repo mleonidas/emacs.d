@@ -24,11 +24,11 @@
 
 (setq-hook! '+doom-dashboard-mode-hook default-directory "~")
 
-(setq doom-font (font-spec :family "MesloLGMDZ Nerd Font" :size 12)
-      doom-big-font (font-spec :family "MesloLGMDZ Nerd Font" :size 14)
+(setq doom-font (font-spec :family "MesloLGSDZ Nerd Font" :size 12)
+      doom-big-font (font-spec :family "MesloLGSDZ Nerd Font" :size 24)
       doom-big-font-increment 5
-      doom-variable-pitch-font (font-spec :family "MesloLGMDZ Nerd Font")
-      doom-unicode-font (font-spec :family "MesloLGMDZ Nerd Font"))
+      doom-variable-pitch-font (font-spec :family "DejaVu Sans")
+      doom-unicode-font (font-spec :family "MesloLGSDZ Nerd Font"))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -62,8 +62,6 @@
       doom-modeline-modal-icon nil
       doom-modeline-github t)
 
-(set-face-attribute 'mode-line nil :height 100)
-(set-face-attribute 'mode-line-inactive nil :height 100)
 
 
 ;; If you use `org' and don't want your org files in the default location below,
@@ -152,6 +150,15 @@
             (set (make-local-variable 'font-lock-variable-name-face)
                  'font-lock-function-name-face)))
 
+;; (use-package kubernetes
+;;   :defer
+;;   :commands (kubernetes-overview))
+;; (use-package kubernetes-evil
+;;   :defer
+;;   :after kubernetes)
+;; (map! :leader
+;;       (:prefix "o"
+;;         :desc "Kubernetes" "K" 'kubernetes-overview))
 
 (load! "+bindings")
 (load! "+java")
